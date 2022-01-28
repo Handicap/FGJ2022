@@ -4,8 +4,15 @@ using UnityEngine;
 
 namespace FGJ2022.Grid
 {
-    public static class Grid
+    public class Grid
     {
+        private List<GameObject> gridPointX = new List<GameObject>();
+        private List<GameObject> gridPointY = new List<GameObject>();
 
+        public Grid(List<GameObject> gridPointX, List<GameObject> gridPointY)
+        {
+            this.gridPointX = gridPointX;
+            this.gridPointY = gridPointY;
+        }
     }
 }
