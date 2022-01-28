@@ -2,27 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridManager : MonoBehaviour
+namespace FGJ2022.Grid
 {
-    private static GridManager instace;
-    public static GridManager Instance => instace;
-    public Vector2[] GameGrid => gameGrid;
-    private Vector2[] gameGrid;
-
-    private void Start()
+    public class GridManager : MonoBehaviour
     {
-        if (Instance != null)
+        private static GridManager instace;
+        public static GridManager Instance => instace;
+        public Vector2[] GameGrid => gameGrid;
+        private Vector2[] gameGrid;
+
+        private void Start()
         {
-            instace = this;
-        } else
-        {
-            Debug.LogError("Multiple", this);
+            if (Instance != null)
+            {
+                instace = this;
+            }
+            else
+            {
+                Debug.LogError("Multiple", this);
+            }
         }
+
+        public void Initialize()
+        {
+
+        }
+
     }
-
-    public void Initialize()
-    {
-
-    }
-
 }
