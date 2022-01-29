@@ -54,10 +54,6 @@ namespace FGJ2022.Input
             {
                 OnMouseRelease();
             }
-<<<<<<< HEAD
-=======
-            
->>>>>>> Artstuff
         }
 
         private void TestMouse()
@@ -73,10 +69,6 @@ namespace FGJ2022.Input
                     GameObject hitObject = hitInfo.collider.gameObject;
                     targets.Add(hitObject);
                     targetStrings.Add(hitInfo.collider.gameObject.name);
-<<<<<<< HEAD
-=======
-                    
->>>>>>> Artstuff
                     // this is fucking stupid
                     if (hitObject.GetComponent<Grid.GridCell>())
                     {
@@ -99,9 +91,5 @@ namespace FGJ2022.Input
         {
             //Debug.Log("MouseUp");
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> Artstuff
     }
 }
