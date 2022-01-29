@@ -19,8 +19,11 @@ namespace FGJ2022.Input
         public event Action<Grid.GridCell> OnGridHit;
         public event Action<Actors.BaseActor> OnActorHit;
 
-        public static readonly string ACTOR_LAYYER = "Actors";
-        public static readonly string GRID_LAYER = "Grid";
+
+        private Dictionary<string, int> layerValues = new Dictionary<string, int>();
+
+        // raycast in this order
+        private static List<LayerMask> LayerPriority = new List<LayerMask>();
 
         private void Start()
         {
@@ -31,10 +34,8 @@ namespace FGJ2022.Input
             {
                 DestroyImmediate(this);
             }
-            actorSelectionGraphic.SetActive(false);
-            actorSelectorGraphic.SetActive(false);
-            gridSelectionGraphic.SetActive(false);
-            gridSelectorGraphic.SetActive(false);
+            LayerPriority.Add(LayerMask.GetMask("Actors"));
+            LayerPriority.Add(LayerMask.GetMask("Grid"));
         }
 
         private void Update()
@@ -59,35 +60,26 @@ namespace FGJ2022.Input
         {
             // raycast and see if we hit something with priority
             Ray mouseRay = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
-            if (Physics.Raycast(mouseRay, out RaycastHit hit))
+            List<GameObject> targets = new List<GameObject>();
+            List<string> targetStrings = new List<string>();
+            for (int i = 0; i < LayerPriority.Count; i++)
             {
-                GameObject hitObject = hit.collider.gameObject;
-                Actors.BaseActor actorHit = hitObject.GetComponent<Actors.BaseActor>();
-                if (actorHit != null)
+                if (Physics.Raycast(mouseRay, out RaycastHit hitInfo, Mathf.Infinity, LayerPriority[i], QueryTriggerInteraction.UseGlobal))
                 {
-                    Debug.Log("Hit an actor! boooyeeyy");
-                }
-
-                Grid.GridCell cellHit = hitObject.GetComponent<Grid.GridCell>();
-                if (cellHit != null)
-                {
-                    Debug.Log("Hit a cell! hooray");
+                    GameObject hitObject = hitInfo.collider.gameObject;
+                    targets.Add(hitObject);
+                    targetStrings.Add(hitInfo.collider.gameObject.name);
+                    // this is fucking stupid
+                    if (hitObject.GetComponent<Grid.GridCell>())
+                    {
+                        gridSelectorGraphic.transform.position = hitObject.transform.position;
+                    } else if (hitObject.GetComponent<Actors.BaseActor>())
+                    {
+                        actorSelectorGraphic.transform.position = hitObject.transform.position;
+                    }
                 }
             }
-            List<GameObject> targets = new List<GameObject>();
             currentTargets = targets;
-        }
-
-        private void SetGridSelector(bool active, GameObject gameObject)
-        {
-            gridSelectorGraphic.SetActive(active);
-            gridSelectorGraphic.transform.position = gameObject.transform.position;
-        }
-
-        private void SetActorSelector(bool active, GameObject target)
-        {
-            actorSelectorGraphic.SetActive(active);
-            actorSelectorGraphic.transform.position = target.transform.position;
         }
         //TODO: maybe tween from->to
         private void InterpolateGraphics()
