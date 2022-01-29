@@ -1,26 +1,17 @@
 fileFormatVersion: 2
-guid: dd8c815ae0aaf8543b5451c985c1fb47
+guid: 155c441dd89cb644288964a17f112f7d
 ModelImporter:
   serializedVersion: 21202
   internalIDToNameTable:
   - first:
-      74: -1335888015671093613
-    second: Cube|walk
+      74: 2264077025236624520
+    second: Armature.001|Armature.001Action
   - first:
-      74: 6741808510794169961
-    second: Cube|walk.001
+      74: -5784005261616917065
+    second: Rotate_Ad
   - first:
-      74: 4781951162920444690
-    second: Armature|ArmatureAction
-  - first:
-      74: -1978303741906493279
-    second: Armature|idle
-  - first:
-      74: -4799524434163024911
-    second: Armature|walk
-  - first:
-      74: -3761853702796878811
-    second: Armature|walk.001
+      74: -960898424075949690
+    second: Armature.001|ArmatureAction
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -49,7 +40,36 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Rotate_Ad
+      takeName: Armature.001|Armature.001Action.001
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 164
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 0
   meshes:
     lODScreenPercentages: []
