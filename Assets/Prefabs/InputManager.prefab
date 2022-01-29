@@ -27,11 +27,6 @@ Transform:
   m_GameObject: {fileID: 1241218947828398911}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-  m_LocalScale: {x: 1, y: 1, z: 1}
-=======
-  m_LocalScale: {x: 0.8, y: 1, z: 0.8}
->>>>>>> Artstuff
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8875047620375952131}
@@ -115,11 +110,6 @@ Transform:
   m_GameObject: {fileID: 3593562633690552163}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-  m_LocalScale: {x: 1, y: 1, z: 1}
-=======
-  m_LocalScale: {x: 0.8, y: 1, z: 0.8}
->>>>>>> Artstuff
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8875047620375952131}
@@ -184,11 +174,6 @@ SphereCollider:
   m_GameObject: {fileID: 3593562633690552163}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-<<<<<<< HEAD
-  m_Enabled: 1
-=======
-  m_Enabled: 0
->>>>>>> Artstuff
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
@@ -220,11 +205,6 @@ Transform:
   m_GameObject: {fileID: 5464495042270225359}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-  m_LocalScale: {x: 1, y: 1, z: 1}
-=======
-  m_LocalScale: {x: 0.8, y: 1, z: 0.8}
->>>>>>> Artstuff
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8875047620375952131}
@@ -289,11 +269,6 @@ SphereCollider:
   m_GameObject: {fileID: 5464495042270225359}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-<<<<<<< HEAD
-  m_Enabled: 1
-=======
-  m_Enabled: 0
->>>>>>> Artstuff
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
@@ -325,11 +300,6 @@ Transform:
   m_GameObject: {fileID: 6130636725786874094}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-<<<<<<< HEAD
-  m_LocalScale: {x: 1, y: 1, z: 1}
-=======
-  m_LocalScale: {x: 0.8, y: 1, z: 0.8}
->>>>>>> Artstuff
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8875047620375952131}
@@ -394,11 +364,6 @@ SphereCollider:
   m_GameObject: {fileID: 6130636725786874094}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-<<<<<<< HEAD
-  m_Enabled: 1
-=======
-  m_Enabled: 0
->>>>>>> Artstuff
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
