@@ -7,14 +7,14 @@ namespace FGJ2022.Grid
     public class GridManager : MonoBehaviour
     {
         [SerializeField] private GameObject gridPoint;
-        private static GridManager instace;
-        public static GridManager Instance => instace;
+        private static GridManager instance;
+        public static GridManager Instance => instance;
 
         private void Start()
         {
             if (Instance == null)
             {
-                instace = this;
+                instance = this;
             }
             else
             {
