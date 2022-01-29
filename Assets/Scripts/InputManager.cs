@@ -10,6 +10,17 @@ namespace FGJ2022.Input
         public event Action<GameObject> OnClick;
         private InputManager instance;
         [SerializeField] private List<GameObject> currentTargets = new List<GameObject>();
+        [SerializeField] private GameObject actorSelectorGraphic;
+        [SerializeField] private GameObject actorSelectionGraphic;
+        [SerializeField] private GameObject gridSelectorGraphic;
+        [SerializeField] private GameObject gridSelectionGraphic;
+        [SerializeField] private GameObject currentSelection;
+
+        public event Action<Grid.GridCell> OnGridHit;
+        public event Action<Actors.BaseActor> OnActorHit;
+
+
+        private Dictionary<string, int> layerValues = new Dictionary<string, int>();
 
         // raycast in this order
         private static List<LayerMask> LayerPriority = new List<LayerMask>();
@@ -55,11 +66,25 @@ namespace FGJ2022.Input
             {
                 if (Physics.Raycast(mouseRay, out RaycastHit hitInfo, Mathf.Infinity, LayerPriority[i], QueryTriggerInteraction.UseGlobal))
                 {
-                    targets.Add(hitInfo.collider.gameObject);
+                    GameObject hitObject = hitInfo.collider.gameObject;
+                    targets.Add(hitObject);
                     targetStrings.Add(hitInfo.collider.gameObject.name);
+                    // this is fucking stupid
+                    if (hitObject.GetComponent<Grid.GridCell>())
+                    {
+                        gridSelectorGraphic.transform.position = hitObject.transform.position;
+                    } else if (hitObject.GetComponent<Actors.BaseActor>())
+                    {
+                        actorSelectorGraphic.transform.position = hitObject.transform.position;
+                    }
                 }
             }
             currentTargets = targets;
+        }
+        //TODO: maybe tween from->to
+        private void InterpolateGraphics()
+        {
+
         }
 
         private void OnMouseRelease()
