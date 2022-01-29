@@ -84,5 +84,10 @@ namespace FGJ2022.Grid
             westNeighbour?.NeighbourLost(this);
             eastNeighbour?.NeighbourLost(this);
         }
+
+        public override string ToString()
+        {
+            return coordinate.ToString();
+        }
     }
 }

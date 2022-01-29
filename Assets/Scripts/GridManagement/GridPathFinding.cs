@@ -43,7 +43,7 @@ namespace FGJ2022.Grid
             AStarSharp.Astar astar = new AStarSharp.Astar(pathNodes);
             Stack<AStarSharp.Node> astarPath = astar.FindPath(from.Coordinate, to.Coordinate);
             List<GridCell> path = new List<GridCell>();
-            if (astarPath == null) return path;
+            if (astarPath == null) return null;
             while (astarPath.Count > 0)
             {
                 AStarSharp.Node node = astarPath.Pop();

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5565073244810252087}
   - component: {fileID: 7532033695401079051}
+  - component: {fileID: 7051974501627107819}
   m_Layer: 0
   m_Name: Cell
   m_TagString: Untagged
@@ -45,6 +46,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b69ed7217a1bc541a9116e5fb800d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  northNeighbour: {fileID: 0}
+  southNeighbour: {fileID: 0}
+  westNeighbour: {fileID: 0}
+  eastNeighbour: {fileID: 0}
+  coordinate: {x: 0, y: 0}
+--- !u!65 &7051974501627107819
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5398204969544078577}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6639996364306788543
 GameObject:
   m_ObjectHideFlags: 0

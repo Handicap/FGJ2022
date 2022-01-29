@@ -7,7 +7,6 @@ namespace FGJ2022.Grid
 {
     public class GridManager : MonoBehaviour
     {
-        [SerializeField] private Transform gridCenter;
         [SerializeField] private GridCell cellPrefab;
 
         [SerializeField] private Vector2Int start;
@@ -18,7 +17,8 @@ namespace FGJ2022.Grid
 
         private Grid currentGrid;
 
-        private void Start()
+
+        private void Awake()
         {
             if (Instance == null)
             {
@@ -30,15 +30,19 @@ namespace FGJ2022.Grid
                 Destroy(this);
                 return;
             }
+
+            GenerateDefaultGrid();
+            GenerateAreas();
         }
 
         [Button]
-        public void FindPath()
+        public void TestFindPath()
         {
             currentGrid.ColorAll(Color.black);
             GridCell from = currentGrid.GetCell(start);
             GridCell to = currentGrid.GetCell(end);
             List<GridCell> path =  GridPathFinding.FindPath(from, to, currentGrid);
+            if (path == null) return;
             List<string> pathStrings = new List<string>();
             foreach (var item in path)
             {
@@ -46,6 +50,26 @@ namespace FGJ2022.Grid
                 pathStrings.Add(item.Coordinate.ToString());
             }
             Debug.Log("Path was " + string.Join(", ", pathStrings));
+        }
+
+        public List<GridCell> FindPath(GridCell from, GridCell to, out bool foundPath)
+        {
+            if (from == null || to == null)
+            {
+                Debug.LogWarning("No path given");
+                foundPath = false;
+                return new List<GridCell>();
+            }
+            foundPath = true;
+            List<GridCell> path = GridPathFinding.FindPath(from, to, currentGrid);
+            //List<string> pathStrings = new List<string>();
+            //Debug.Log("Path was " + string.Join(", ", pathStrings));
+            if (path == null)
+            {
+                foundPath = false;
+                return new List<GridCell>();
+            }
+            return path;
         }
 
         [Button]
@@ -64,13 +88,11 @@ namespace FGJ2022.Grid
         public void GenerateGrid(int x, int y)
         {
             currentGrid = new Grid(cellPrefab, x, y, this.transform);
-            Debug.Log("asdf");
         }
 
         public void Initialize()
         {
 
         }
-
     }
 }
