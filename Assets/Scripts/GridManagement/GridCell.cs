@@ -15,12 +15,35 @@ namespace FGJ2022.Grid
         [SerializeField] private GridCell northNeighbour, southNeighbour, westNeighbour, eastNeighbour;
         private CellPassability passability = CellPassability.Passable;
         [SerializeField] private Vector2Int coordinate;
+<<<<<<< HEAD
+=======
+        [SerializeField] private bool highlighted = false;
+        [SerializeField] private GameObject highlightGraphic;
+
+
+        private Color passableColor = new Color(0.40f, 0.75f, 0.65f);
+        private Color impassableColor = new Color(0.70f, 0.20f, 0.30f);
+>>>>>>> Artstuff
 
         public CellPassability Passability { get => passability; 
             set
             {
                 passability = value;
+<<<<<<< HEAD
                 SetColor(value == CellPassability.Passable ? Color.green : Color.red);
+=======
+                SetColor(value == CellPassability.Passable ? passableColor : impassableColor);
+            }
+        }
+
+        public bool Highlighted
+        {
+            get => highlighted;
+            set
+            {
+                highlighted = value;
+                highlightGraphic.SetActive(value);
+>>>>>>> Artstuff
             }
         }
         public Vector2 Dimensions
@@ -46,6 +69,11 @@ namespace FGJ2022.Grid
             this.westNeighbour = westNeighbour;
             this.eastNeighbour = eastNeighbour;
             this.coordinate = coordinate;
+<<<<<<< HEAD
+=======
+            if (this.highlightGraphic == null)
+                Debug.LogError("Cell can't find highlight graphic");
+>>>>>>> Artstuff
         }
 
         private void NeighbourLost(GridCell neighbour)
@@ -89,5 +117,25 @@ namespace FGJ2022.Grid
         {
             return coordinate.ToString();
         }
+<<<<<<< HEAD
+=======
+
+        private void OnMouseEnter()
+        {
+            this.Highlighted = true;
+            northNeighbour.Highlighted = true;
+            westNeighbour.Highlighted = true;   
+            eastNeighbour.Highlighted = true;      
+            southNeighbour.Highlighted = true; 
+        }
+        private void OnMouseExit()
+        {
+            this.Highlighted = false;
+            northNeighbour.Highlighted = false;
+            westNeighbour.Highlighted = false;
+            eastNeighbour.Highlighted = false;
+            southNeighbour.Highlighted = false;
+        }
+>>>>>>> Artstuff
     }
 }

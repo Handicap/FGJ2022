@@ -19,11 +19,8 @@ namespace FGJ2022.Input
         public event Action<Grid.GridCell> OnGridHit;
         public event Action<Actors.BaseActor> OnActorHit;
 
-
-        private Dictionary<string, int> layerValues = new Dictionary<string, int>();
-
-        // raycast in this order
-        private static List<LayerMask> LayerPriority = new List<LayerMask>();
+        public static readonly string ACTOR_LAYYER = "Actors";
+        public static readonly string GRID_LAYER = "Grid";
 
         private void Start()
         {
@@ -34,8 +31,10 @@ namespace FGJ2022.Input
             {
                 DestroyImmediate(this);
             }
-            LayerPriority.Add(LayerMask.GetMask("Actors"));
-            LayerPriority.Add(LayerMask.GetMask("Grid"));
+            actorSelectionGraphic.SetActive(false);
+            actorSelectorGraphic.SetActive(false);
+            gridSelectionGraphic.SetActive(false);
+            gridSelectorGraphic.SetActive(false);
         }
 
         private void Update()
@@ -54,40 +53,41 @@ namespace FGJ2022.Input
             {
                 OnMouseRelease();
             }
-<<<<<<< HEAD
-=======
-            
->>>>>>> Artstuff
         }
 
         private void TestMouse()
         {
             // raycast and see if we hit something with priority
             Ray mouseRay = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
-            List<GameObject> targets = new List<GameObject>();
-            List<string> targetStrings = new List<string>();
-            for (int i = 0; i < LayerPriority.Count; i++)
+            if (Physics.Raycast(mouseRay, out RaycastHit hit))
             {
-                if (Physics.Raycast(mouseRay, out RaycastHit hitInfo, Mathf.Infinity, LayerPriority[i], QueryTriggerInteraction.UseGlobal))
+                GameObject hitObject = hit.collider.gameObject;
+                Actors.BaseActor actorHit = hitObject.GetComponent<Actors.BaseActor>();
+                if (actorHit != null)
                 {
-                    GameObject hitObject = hitInfo.collider.gameObject;
-                    targets.Add(hitObject);
-                    targetStrings.Add(hitInfo.collider.gameObject.name);
-<<<<<<< HEAD
-=======
-                    
->>>>>>> Artstuff
-                    // this is fucking stupid
-                    if (hitObject.GetComponent<Grid.GridCell>())
-                    {
-                        gridSelectorGraphic.transform.position = hitObject.transform.position;
-                    } else if (hitObject.GetComponent<Actors.BaseActor>())
-                    {
-                        actorSelectorGraphic.transform.position = hitObject.transform.position;
-                    }
+                    Debug.Log("Hit an actor! boooyeeyy");
+                }
+
+                Grid.GridCell cellHit = hitObject.GetComponent<Grid.GridCell>();
+                if (cellHit != null)
+                {
+                    Debug.Log("Hit a cell! hooray");
                 }
             }
+            List<GameObject> targets = new List<GameObject>();
             currentTargets = targets;
+        }
+
+        private void SetGridSelector(bool active, GameObject gameObject)
+        {
+            gridSelectorGraphic.SetActive(active);
+            gridSelectorGraphic.transform.position = gameObject.transform.position;
+        }
+
+        private void SetActorSelector(bool active, GameObject target)
+        {
+            actorSelectorGraphic.SetActive(active);
+            actorSelectorGraphic.transform.position = target.transform.position;
         }
         //TODO: maybe tween from->to
         private void InterpolateGraphics()
@@ -99,9 +99,5 @@ namespace FGJ2022.Input
         {
             //Debug.Log("MouseUp");
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> Artstuff
     }
 }
