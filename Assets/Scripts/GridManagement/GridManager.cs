@@ -1,20 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NaughtyAttributes;
 
 namespace FGJ2022.Grid
 {
     public class GridManager : MonoBehaviour
     {
-        [SerializeField] private GameObject gridPoint;
-        private static GridManager instace;
-        public static GridManager Instance => instace;
+        [SerializeField] private GameObject gridCenter;
+        private static GridManager instance;
+        public static GridManager Instance => instance;
 
         private void Start()
         {
             if (Instance == null)
             {
-                instace = this;
+                instance = this;
             }
             else
             {
@@ -24,7 +25,14 @@ namespace FGJ2022.Grid
             }
         }
 
-        private void GenerateGrid(int x, int y)
+        [Button]
+        public void GenerateDefaultGrid()
+        {
+            GenerateGrid(10, 10);
+        }
+
+        
+        public void GenerateGrid(int x, int y)
         {
             Debug.Log("asdf");
         }
