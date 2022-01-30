@@ -113,6 +113,10 @@ namespace FGJ2022.Actors
         [Button]
         public void TestMoveTo()
         {
+            if (!targetCell) { 
+                Debug.LogError("Moving to null cell!");
+                return; 
+            }
             targetCell.SetColor(Color.yellow);
             position.SetColor(Color.yellow);
             MoveTo(targetCell);

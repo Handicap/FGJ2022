@@ -37,6 +37,8 @@ namespace FGJ2022.Grid
             {
                 highlighted = value;
                 highlightGraphic.SetActive(value);
+                if (!value)
+                    ResetColor();
             }
         }
         public Vector2 Dimensions
@@ -96,6 +98,62 @@ namespace FGJ2022.Grid
             }
         }
 
+        public void SetHighlightColor(Color color)
+        {
+            MeshRenderer[] renderers = highlightGraphic.GetComponents<MeshRenderer>();
+            foreach (var item in renderers)
+            {
+                item.material.color = color;
+            }
+        }
+
+        public void ResetColor()
+        {
+            SetColor(passability == CellPassability.Passable ? passableColor : impassableColor);
+        }
+
+        private void SetHighlighted(bool highlighted)
+        {
+            Highlighted = highlighted;
+            // Highlighted getter resets colors automatically
+        }
+
+        private void SetHighlighted(bool highlighted, Color color)
+        {
+            Highlighted = highlighted;
+            if(highlighted)
+                SetColor(color);
+            // Highlighted getter resets colors automatically
+        }
+
+        private void SetNeighborsHighlightedRecursively(bool highlighted, int iterations)
+        {
+            Highlighted = highlighted;
+            // Highlighted getter resets colors automatically
+
+            if (iterations <= 0) return;
+            northNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
+            westNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
+            eastNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
+            southNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
+        }
+
+        // Sets cell and neighboring cells to selected color, or if highlighted is false, to original color
+        private void SetNeighborsHighlightedRecursively(bool highlighted, Color color, int iterations)
+        {
+            this.Highlighted = highlighted;
+
+            if(highlighted)
+                SetHighlightColor(color);
+            // Highlighted getter resets colors automatically
+
+            if (iterations <= 0) return;
+            northNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
+            westNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
+            eastNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
+            southNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
+        }
+
         private void OnDestroy()
         {
             northNeighbour?.NeighbourLost(this);
@@ -111,19 +169,13 @@ namespace FGJ2022.Grid
 
         private void OnMouseEnter()
         {
-            this.Highlighted = true;
-            northNeighbour.Highlighted = true;
-            westNeighbour.Highlighted = true;   
-            eastNeighbour.Highlighted = true;      
-            southNeighbour.Highlighted = true; 
+            //SetNeighborsHighlightedRecursively(true, Color.yellow, 2);
+            SetHighlighted(true, Color.cyan);
         }
         private void OnMouseExit()
         {
-            this.Highlighted = false;
-            northNeighbour.Highlighted = false;
-            westNeighbour.Highlighted = false;
-            eastNeighbour.Highlighted = false;
-            southNeighbour.Highlighted = false;
+            SetHighlighted(false, Color.white);
+            //SetNeighborsHighlightedRecursively(false, Color.white, 2);
         }
     }
 }

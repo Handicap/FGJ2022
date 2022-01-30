@@ -87,10 +87,15 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[4]
       value: 
       objectReference: {fileID: 2100000, guid: 0ce6db6c78287724595a9266f20e5539, type: 2}
+    - target: {fileID: 6226850895063394535, guid: d724d8b9b21f76042b48a349bdb6f217,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7225104194029881467, guid: d724d8b9b21f76042b48a349bdb6f217,
         type: 3}
       propertyPath: m_Name
-      value: BaseCharacter
+      value: BaseCharacter_Pakkopaita
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d724d8b9b21f76042b48a349bdb6f217, type: 3}

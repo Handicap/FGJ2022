@@ -19,7 +19,6 @@ namespace FGJ2022.Input
         public event Action<Grid.GridCell> OnGridHit;
         public event Action<Actors.BaseActor> OnActorHit;
 
-
         private Dictionary<string, int> layerValues = new Dictionary<string, int>();
 
         // raycast in this order
