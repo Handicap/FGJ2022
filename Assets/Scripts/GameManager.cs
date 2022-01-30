@@ -17,6 +17,9 @@ namespace FGJ2022
         private TurnOwner currentTurnOwner = TurnOwner.Player;
         private GameManager instance;
 
+        [SerializeField] private AudioClip[] songs;
+        private AudioSource audioSource;
+
         public static List<TurnOwner> TurnOrder = new List<TurnOwner>
         {
             TurnOwner.Player,
@@ -34,6 +37,12 @@ namespace FGJ2022
                 return;
             }
             Debug.Log("Started gamemanager", this);
+        }
+
+        private void Start()
+        {
+            audioSource = GetComponent<AudioSource>();
+            audioSource.Play();
         }
 
         [Button]

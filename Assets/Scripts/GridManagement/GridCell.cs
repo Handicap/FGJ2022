@@ -22,11 +22,18 @@ namespace FGJ2022.Grid
         private Color passableColor = new Color(0.40f, 0.75f, 0.65f);
         private Color impassableColor = new Color(0.70f, 0.20f, 0.30f);
 
+        private void Start()
+        {
+           if (passability == CellPassability.Impassable)
+                GetComponent<BuildingGraphicsInstancer>().SetBuildingVisibility(true);
+        }
+
         public CellPassability Passability { get => passability; 
             set
             {
                 passability = value;
                 SetColor(value == CellPassability.Passable ? passableColor : impassableColor);
+                GetComponent<BuildingGraphicsInstancer>().SetBuildingVisibility(value == CellPassability.Impassable);
             }
         }
 
@@ -94,7 +101,8 @@ namespace FGJ2022.Grid
             MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
             foreach (var item in renderers)
             {
-                item.material.color = color;
+                if(item.tag == "ColorChangingPart")
+                    item.material.color = color;
             }
         }
 
@@ -103,7 +111,8 @@ namespace FGJ2022.Grid
             MeshRenderer[] renderers = highlightGraphic.GetComponents<MeshRenderer>();
             foreach (var item in renderers)
             {
-                item.material.color = color;
+                if (item.tag == "ColorChangingPart")
+                    item.material.color = color;
             }
         }
 
