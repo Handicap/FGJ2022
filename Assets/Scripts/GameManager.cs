@@ -50,10 +50,17 @@ namespace FGJ2022
 
         private void Start()
         {
+            IEnumerator DelayedStart()
+            {
+                yield return null;
+                //yield return new WaitForSeconds(1f);
+                MoveCameraTo(playerCharacter.Position);
+            }
             audioSource = GetComponent<AudioSource>();
             audioSource.Play();
             Input.InputManager.Instance.OnGridTargetChange += ShowPathTo;
             Input.InputManager.Instance.OnGridSelected += GridSelected;
+            StartCoroutine(DelayedStart());
         }
 
         

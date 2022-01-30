@@ -22,7 +22,7 @@ namespace FGJ2022.Grid
                 List<GridCell> retCells = new List<GridCell>();
                 for (int i = 0; i < cells.Count; i++)
                 {
-                    for (int j = 0; j < cells.Count; j++)
+                    for (int j = 0; j < cells[i].Count; j++)
                     {
                         retCells.Add(cells[i][j]);
                     }
@@ -127,19 +127,21 @@ namespace FGJ2022.Grid
         // push new rows to the stack
         public void GenerateNewCells()
         {
+            int startingCellCount = AllCells.Count;
             int startRow = cells.First().Count;
             for (int i = 0; i < Size.x; i++)
             {
                 List<GridCell> column = cells[i];
-                column.AddRange(CreateGridColumn(Size.x, gridPrefab));
+                List<GridCell> newColumn = CreateGridColumn(Size.x, gridPrefab);
+                column.AddRange(newColumn);
             }
 
             float seed = Random.Range(100f, 200f);
             CreateBlockers(new Vector2Int(0, startRow), new Vector2Int(Size.x, cells.First().Count), threshhold: 0.7f, seed: seed);
             ConnectCells();
             SetCellTransforms();
-            
-            Debug.Log("Generated new area with seed " + seed);
+            int endCellCount = AllCells.Count;
+            Debug.Log("Generated new area with seed " + seed + " " + startingCellCount + " -> " + endCellCount);
         }
 
         private void ConnectCells()
