@@ -20,6 +20,8 @@ namespace FGJ2022
         [SerializeField] private AudioClip[] songs;
         private AudioSource audioSource;
 
+        [SerializeField] private Actors.BaseActor playerCharacter;
+
         public static List<TurnOwner> TurnOrder = new List<TurnOwner>
         {
             TurnOwner.Player,
@@ -43,6 +45,23 @@ namespace FGJ2022
         {
             audioSource = GetComponent<AudioSource>();
             audioSource.Play();
+            Input.InputManager.Instance.OnGridTargetChange += ShowPathTo;
+        }
+
+        private void ShowPathTo(Grid.GridCell target)
+        {
+
+            Grid.GridManager.Instance.ResetCellColors();
+            if (playerCharacter == null) return;
+            // slightly brutish
+            List<Grid.GridCell> path = Grid.GridManager.Instance.FindPath(playerCharacter.Position, target, out bool success);
+            if (success)
+            {
+                foreach (var item in path)
+                {
+                    item.SetColor(Color.cyan);
+                }
+            }
         }
 
         [Button]
@@ -63,6 +82,7 @@ namespace FGJ2022
             Debug.Log("Passed turn to " + nextOwner.ToString());
         }
 
+        [Button]
         public void Restart()
         {
             // yksi funktio kahdella rivillä

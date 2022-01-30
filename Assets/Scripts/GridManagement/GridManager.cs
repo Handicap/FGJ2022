@@ -32,7 +32,12 @@ namespace FGJ2022.Grid
             }
 
             GenerateDefaultGrid();
-            GenerateAreas();
+            //GenerateAreas();
+        }
+
+        public void ResetCellColors()
+        {
+            currentGrid.ResetAllColors();
         }
 
         [Button]
@@ -78,11 +83,6 @@ namespace FGJ2022.Grid
             GenerateGrid(10, 10);
         }
 
-        [Button]
-        public void GenerateAreas()
-        {
-            currentGrid.GenerateAreas(new Vector2Int(0, 0), new Vector2Int(10, 10));
-        }
 
         [Button]
         public void CreateNewAreas()

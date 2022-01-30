@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using FGJ2022.Actors;
 
 namespace FGJ2022.Grid
 {
@@ -17,6 +18,8 @@ namespace FGJ2022.Grid
         [SerializeField] private Vector2Int coordinate;
         [SerializeField] private bool highlighted = false;
         [SerializeField] private GameObject highlightGraphic;
+
+        [SerializeField] private List<Actors.BaseActor> occupants = new List<Actors.BaseActor>();
 
 
         private Color passableColor = new Color(0.40f, 0.75f, 0.65f);
@@ -63,6 +66,7 @@ namespace FGJ2022.Grid
         }
 
         public Vector2Int Coordinate { get => coordinate; }
+        public List<BaseActor> Occupants { get => occupants; }
 
         public void Initialize(GridCell northNeighbour, GridCell southNeighbour, GridCell westNeighbour, GridCell eastNeighbour, Vector2Int coordinate)
         {
@@ -175,7 +179,7 @@ namespace FGJ2022.Grid
         {
             return coordinate.ToString();
         }
-
+        /*
         private void OnMouseEnter()
         {
             //SetNeighborsHighlightedRecursively(true, Color.yellow, 2);
@@ -186,5 +190,6 @@ namespace FGJ2022.Grid
             SetHighlighted(false, Color.white);
             //SetNeighborsHighlightedRecursively(false, Color.white, 2);
         }
+        */
     }
 }

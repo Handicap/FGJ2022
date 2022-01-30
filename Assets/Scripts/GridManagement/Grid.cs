@@ -19,15 +19,15 @@ namespace FGJ2022.Grid
 
         public List<GridCell> AllCells { get
             {
-                List<GridCell> cells = new List<GridCell>();
+                List<GridCell> retCells = new List<GridCell>();
                 for (int i = 0; i < cells.Count; i++)
                 {
                     for (int j = 0; j < cells.Count; j++)
                     {
-                        cells.Add(this.cells[i][j]);
+                        retCells.Add(cells[i][j]);
                     }
                 }
-                return cells;
+                return retCells;
             } 
         }
 
@@ -51,6 +51,8 @@ namespace FGJ2022.Grid
             //ColorCheckerBoard(mainColor, secondaryColor);
             SetCellTransforms();
             ConnectCells();
+            float seed = Random.Range(100f, 200f);
+            CreateBlockers(new Vector2Int(0, 0), new Vector2Int(Size.x, Size.y), seed: seed, threshhold: 0.70f);
         }
 
         private void SetCellTransforms()
@@ -91,9 +93,12 @@ namespace FGJ2022.Grid
                 List<GridCell> column = cells[i];
                 column.AddRange(CreateGridColumn(Size.x, gridPrefab));
             }
-            CreateBlockers(new Vector2Int(0, startRow), new Vector2Int(Size.x, cells.First().Count));
+
+            float seed = Random.Range(100f, 200f);
+            CreateBlockers(new Vector2Int(0, startRow), new Vector2Int(Size.x, cells.First().Count), threshhold: 0.7f, seed: seed);
             ConnectCells();
             SetCellTransforms();
+            Debug.Log("Generated new area with seed " + seed);
         }
 
         private void ConnectCells()
@@ -141,13 +146,6 @@ namespace FGJ2022.Grid
         }
 
 
-        public void GenerateAreas(Vector2Int startPoint, Vector2Int endPoint)
-        {
-            float seed = Random.Range(100f, 200f);
-            CreateBlockers(startPoint, endPoint, seed: seed, threshhold: 0.70f);
-            Debug.Log("Generated areas with seed " + seed);
-        }
-
         private void CreateBlockers(Vector2Int startPosition, Vector2Int endPosition, float threshhold = 0.5f, float seed = 1f)
         {
             ColorCheckerBoard(Color.black, Color.black);
@@ -172,6 +170,14 @@ namespace FGJ2022.Grid
             }
         }
 
+        public void ResetAllColors()
+        {
+            foreach (var item in AllCells)
+            {
+                item.ResetColor();
+            }
+            Debug.Log("Reset colors");
+        }
         public void ColorAll(Color color)
         {
             foreach (var item in AllCells)

@@ -8,7 +8,7 @@ namespace FGJ2022.Input
     public class InputManager : MonoBehaviour
     {
         public event Action<GameObject> OnClick;
-        private InputManager instance;
+        private static InputManager instance;
         [SerializeField] private List<GameObject> currentTargets = new List<GameObject>();
         [SerializeField] private GameObject actorSelectorGraphic;
         [SerializeField] private GameObject actorSelectionGraphic;
@@ -16,8 +16,13 @@ namespace FGJ2022.Input
         [SerializeField] private GameObject gridSelectionGraphic;
         [SerializeField] private GameObject currentSelection;
 
-        public event Action<Grid.GridCell> OnGridHit;
-        public event Action<Actors.BaseActor> OnActorHit;
+        public event Action<Grid.GridCell> OnGridSelected;
+        public event Action<Actors.BaseActor> OnActorSelected;
+        public event Action<Actors.BaseActor> OnActorTargetChange;
+        public event Action<Grid.GridCell> OnGridTargetChange;
+
+        public static InputManager Instance => instance;
+
 
         private Dictionary<string, int> layerValues = new Dictionary<string, int>();
 
@@ -69,12 +74,15 @@ namespace FGJ2022.Input
                     targets.Add(hitObject);
                     targetStrings.Add(hitInfo.collider.gameObject.name);
                     // this is fucking stupid
-                    if (hitObject.GetComponent<Grid.GridCell>())
+                    Grid.GridCell cell = hitObject.GetComponent<Grid.GridCell>();
+                    if (cell != null && !currentTargets.Contains(cell.gameObject))
                     {
                         gridSelectorGraphic.transform.position = hitObject.transform.position;
-                    } else if (hitObject.GetComponent<Actors.BaseActor>())
-                    {
-                        actorSelectorGraphic.transform.position = hitObject.transform.position;
+                        OnGridTargetChange?.Invoke(cell);
+                        if (cell.Occupants.Count > 0)
+                        {
+                            OnActorTargetChange?.Invoke(cell.Occupants[0]);
+                        }
                     }
                 }
             }

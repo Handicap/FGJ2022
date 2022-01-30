@@ -25,7 +25,10 @@ namespace FGJ2022.Actors
         private Stack<GridCell> currentPath = null;
 
         private Coroutine traversalStepRoutine = null;
-
+        public GridCell Position
+        {
+            get => position;
+        }
         public bool MoveTo(GridCell target)
         {
             List<GridCell> path = GridManager.Instance.FindPath(position, target, out bool pathFound);
@@ -37,7 +40,7 @@ namespace FGJ2022.Actors
             {
                 foreach (GridCell item in path)
                 {
-                    item.SetColor(Color.cyan);
+                    //item.SetColor(Color.cyan);
                 }
             }
             path.Reverse();
@@ -86,14 +89,17 @@ namespace FGJ2022.Actors
             OnArrivedToCell?.Invoke(to);
             position = to;
             traversalStepRoutine = null;
+            from.Occupants.Remove(this);
+            position.Occupants.Add(this);
         }
 
         [Button]
         public void SnapToGrid()
         {
-            // DEBUG RAY
-            Debug.DrawRay(transform.position, Vector3.down, Color.magenta);
-            Ray downwardsRay = new Ray(transform.position, Vector3.down);
+            Vector3 rayStart = transform.position;
+            rayStart.y += 10f;
+            Ray downwardsRay = new Ray(rayStart, Vector3.down);
+            Debug.DrawRay(downwardsRay.origin, downwardsRay.direction, Color.magenta, 10f);
             if (Physics.Raycast(downwardsRay, out RaycastHit hitInfo))
             {
                 Debug.Log("Hit " + hitInfo.collider.gameObject.name);
@@ -106,6 +112,7 @@ namespace FGJ2022.Actors
                 position = cell;
                 transform.position = cell.transform.position;
                 Debug.Log("snapped to " + cell);
+                position.Occupants.Add(this);
             } else
             {
                 Debug.LogError("Actor " + name + " was left free floating", gameObject);
@@ -126,7 +133,13 @@ namespace FGJ2022.Actors
 
         private void Start()
         {
-            SnapToGrid();
+            IEnumerator DelayedStart()
+            {
+                yield return null;
+                //yield return new WaitForSeconds(1f);
+                SnapToGrid();
+            }
+            StartCoroutine(DelayedStart());
         }
     }
 }
