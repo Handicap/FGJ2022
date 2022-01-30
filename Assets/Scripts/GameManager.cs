@@ -14,7 +14,7 @@ namespace FGJ2022
 
     public class GameManager : MonoBehaviour
     {
-        private TurnOwner currentTurnOwner = TurnOwner.Player;
+        [SerializeField] private TurnOwner currentTurnOwner = TurnOwner.Player;
         private GameManager instance;
 
         private Dictionary<TurnOwner, List<Actors.BaseActor>> actors = new Dictionary<TurnOwner, List<Actors.BaseActor>>();
@@ -101,6 +101,12 @@ namespace FGJ2022
         private void StartTurn(TurnOwner turnOwner)
         {
             currentTurnOwner = turnOwner;
+
+            if (actors[currentTurnOwner].Count < 1)
+            {
+                PassTurn();
+                return;
+            }
             foreach (var item in actors[currentTurnOwner])
             {
                 item.RefreshActionPoints();
@@ -109,17 +115,11 @@ namespace FGJ2022
             {
                 MoveNPCs();
             }
-            CheckForTurnPass(); // pass the turn immideate if no actors can move
         }
 
         private void GridSelected(Grid.GridCell target)
         {
-            if (actionInProgress)
-            {
-                Debug.LogWarning("Action already in progress");
-                return;
-            }
-            if (currentTurnOwner == TurnOwner.Player)
+            if (currentTurnOwner == TurnOwner.Player && !actionInProgress)
             {
                 Grid.GridManager.Instance.FindPath(playerCharacter.Position, target, out bool pathable);
                 if (pathable)
@@ -180,21 +180,25 @@ namespace FGJ2022
 
         private void CheckForTurnPass()
         {
-            bool allMovesDone = true;
-
+            if (actionInProgress)
+            {
+                return;
+            }
             foreach (var item in actors[currentTurnOwner])
             {
-                if (item.ActionPointsLeft > 0) allMovesDone = false;
+                if (item.ActionPointsLeft > 0)
+                {
+                    Debug.Log("Can't pass turn: " + item.name + " has " + item.ActionPointsLeft + " AP left");
+                    return;
+                }
             }
-            if (allMovesDone)
-            {
-                Debug.Log("All moves done for, " + currentTurnOwner.ToString() + " passing turn");
-                PassTurn();
-            }
+            Debug.Log("All moves done for " + currentTurnOwner.ToString() + ", passing turn");
+            PassTurn();
         }
 
         private void CheckForTurnPass(Actors.BaseActor actor, Grid.GridCell cell)
         {
+            Debug.Log("EndCheck");
             actor.OnMovementEnd -= CheckForTurnPass;
             CheckForTurnPass();
         }
@@ -217,13 +221,26 @@ namespace FGJ2022
                     {
                         Actors.BaseActor nextActor = actorsLeft.First();
                         Grid.GridCell cell = nextActor.GetRandomDestination();
-                        nextActor.MoveTowards(cell);
+                        bool canReachDestination = nextActor.MoveTowards(cell);
+                        if (canReachDestination)
+                        {
+                            actionInProgress = true;
+                        }
                         actorsLeft.Remove(nextActor);
                         Debug.Log("Moving " + nextActor, nextActor);
+                    } else
+                    {
+                        Debug.Log("Action in progress");
                     }
                     yield return null;
                 }
+                Debug.Log("Ended movementroutine");
+                if (currentTurnOwner == TurnOwner.Sheeple)
+                {
+                    PassTurn();
+                }
             }
+            Debug.Log("Moving NPCs");
             StartCoroutine(MovementCoroutine());
         }
 

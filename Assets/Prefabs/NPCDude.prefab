@@ -110,8 +110,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af64ec9b207837b43b3254f686e40564, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movementRange: 5
   position: {fileID: 0}
-  targetCell: {fileID: 0}
+  maxActionPoints: 1
+  actionPointsLeft: 0
+  affiliation: 1
   movementSpeed: 1
 --- !u!1 &1972634257917296150
 GameObject:
