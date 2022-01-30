@@ -83,12 +83,44 @@ namespace FGJ2022.Grid
             }
             return column;
         }
-
+        private void SetNeighbours()
+        {
+            for (int i = 0; i < cells.Count; i++)
+            {
+                for (int j = 0; j < cells[i].Count; j++)
+                {
+                    GridCell cell = cells[i][j];
+                    if (i != 0)
+                    {
+                        cell.WestNeighbour = cells[i - 1][j];
+                    }
+                    if (i != cells.Count - 1)
+                    {
+                        cell.EastNeighbour = cells[i + 1][j];
+                    }
+                    if (j != 0)
+                    {
+                        cell.SouthNeighbour = cells[i][j - 1];
+                    }
+                    if (j != cells[0].Count - 1)
+                    {
+                        cell.NorthNeighbour = cells[i][j + 1];
+                    }
+                }
+            }
+        }
         private void SetEdgeAreas()
         {
             foreach (var item in AllCells)
             {
-                item.Type = item.NeighbourCount < 4 ? CellType.Edge : CellType.Default;
+                if (item.NorthNeighbour == null)
+                {
+                    item.Type = CellType.Edge;
+                } else
+                {
+                    item.Type = CellType.Default;
+                }
+                //item.Type = item.NeighbourCount < 4 ? CellType.Edge : CellType.Default;
             }
         }
 
@@ -112,35 +144,14 @@ namespace FGJ2022.Grid
 
         private void ConnectCells()
         {
-            GridCell northCell = null, southCell = null, westCell = null, eastCell = null;
-
             for (int i = 0; i < cells.Count; i++)
             {   
                 for (int j = 0; j < cells[i].Count; j++)
                 {
-                    if (j > 0)
-                    {
-                        //Debug.Log("I have southern neighbour " + cells[i][j].name, cells[i][j]);
-                        southCell = cells[i][j -1];
-                    }
-                    if (i > 0)
-                    {
-                        //Debug.Log("I have western neighbour " + cells[i][j].name, cells[i][j]);
-                        westCell = cells[i - 1][j];
-                    }
-                    if (j < cells[i].Count - 1)
-                    {
-                        //Debug.Log("I have northern neighbour " + cells[i][j].name, cells[i][j]);
-                        northCell = cells[i][j + 1];
-                    }
-                    if (i < cells.Count - 1)
-                    {
-                        //Debug.Log("I have eastern neighbour " + cells[i][j].name, cells[i][j]);
-                        eastCell = cells[i + 1][j];
-                    }
-                    GetCell(i, j).Initialize(northCell, southCell, westCell, eastCell, new Vector2Int(i, j));
+                    GetCell(i, j).Initialize(new Vector2Int(i, j));
                 }
             }
+            SetNeighbours();
             SetEdgeAreas();
         }
 

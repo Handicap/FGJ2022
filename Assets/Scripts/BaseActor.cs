@@ -56,9 +56,9 @@ namespace FGJ2022.Actors
 
         private void TraversePath()
         {
-            Debug.Log("Starting traversal" + gameObject.name);
+            //Debug.Log("Starting traversal" + gameObject.name);
             OnMovementStart?.Invoke(this, position);
-            Debug.Log("Path for traversal is " + string.Join(", ", currentPath));
+            //Debug.Log("Path for traversal is " + string.Join(", ", currentPath));
             IEnumerator TraversalRoutine()
             {
                 while(currentPath.Count > 1)

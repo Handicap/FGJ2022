@@ -28,6 +28,11 @@ namespace FGJ2022
             TurnOwner.Sheeple
         };
 
+        [SerializeField] private Transform CameraTransform;
+        [SerializeField] private float cameraMovementSpeed = 2f;
+        [SerializeField] private AnimationCurve cameraMovementCurve;
+        private Coroutine cameraMovementRoutine;
+
         private bool actionInProgress = false;
 
         private void Awake()
@@ -51,6 +56,35 @@ namespace FGJ2022
             Input.InputManager.Instance.OnGridSelected += GridSelected;
         }
 
+        
+        private void MoveCameraTo(Actors.BaseActor actor, Grid.GridCell cell)
+        {
+            actor.OnMovementEnd += MoveCameraTo;
+            MoveCameraTo(cell);
+        }
+        private void MoveCameraTo(Grid.GridCell cell)
+        {
+            Vector3 startPos = CameraTransform.position;
+            float phase = 0f;
+            IEnumerator MovementRoutine()
+            {
+                while(phase < 1f)
+                {
+                    float curveSample = cameraMovementCurve.Evaluate(phase);
+                    CameraTransform.position = Vector3.Lerp(startPos, cell.transform.position, curveSample);
+                    phase += Time.unscaledDeltaTime * cameraMovementSpeed;
+                    yield return null;
+                }
+                cameraMovementRoutine = null;
+            }
+            if (cameraMovementRoutine != null)
+            {
+                Debug.LogError("Multiple camera moves");
+                return;
+            }
+            cameraMovementRoutine = StartCoroutine(MovementRoutine());
+        }
+
         private void GridSelected(Grid.GridCell target)
         {
             if (actionInProgress)
@@ -65,6 +99,8 @@ namespace FGJ2022
                 {
                     playerCharacter.MoveTo(target);
                     playerCharacter.OnMovementEnd += MovementEnded;
+                    playerCharacter.OnMovementEnd += CheckIfHitEdge;
+                    playerCharacter.OnMovementEnd += MoveCameraTo;
                     actionInProgress = true;
                     Debug.Log("Moving player to " + target.Coordinate);
                 } else
@@ -74,6 +110,15 @@ namespace FGJ2022
             } else
             {
                 Debug.Log("NPC turn");
+            }
+        }
+
+        private void CheckIfHitEdge(Actors.BaseActor actor, Grid.GridCell cell)
+        {
+            actor.OnMovementEnd -= CheckIfHitEdge;
+            if (cell.Type == Grid.CellType.Edge)
+            {
+                Grid.GridManager.Instance.CreateNewAreas();
             }
         }
 

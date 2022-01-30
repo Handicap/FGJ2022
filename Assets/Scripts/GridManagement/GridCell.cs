@@ -75,28 +75,19 @@ namespace FGJ2022.Grid
         public Vector2Int Coordinate { get => coordinate; }
         public List<BaseActor> Occupants { get => occupants; }
 
-        public void Initialize(GridCell northNeighbour, GridCell southNeighbour, GridCell westNeighbour, GridCell eastNeighbour, Vector2Int coordinate)
+        public void Initialize(Vector2Int coordinate)
         {
-            if (this.northNeighbour == this)
-            {
-                Debug.LogError("Same north as own");
-            }
-            this.northNeighbour = northNeighbour;
-            this.southNeighbour = southNeighbour;
-            this.westNeighbour = westNeighbour;
-            this.eastNeighbour = eastNeighbour;
             this.coordinate = coordinate;
-
             if (this.highlightGraphic == null)
                 Debug.LogError("Cell can't find highlight graphic");
         }
 
         private void NeighbourLost(GridCell neighbour)
         {
-            if (northNeighbour == neighbour) northNeighbour = null;
-            if (southNeighbour == neighbour) southNeighbour = null;
-            if (westNeighbour == neighbour) westNeighbour = null;
-            if (eastNeighbour == neighbour) eastNeighbour = null;
+            if (NorthNeighbour == neighbour) NorthNeighbour = null;
+            if (SouthNeighbour == neighbour) SouthNeighbour = null;
+            if (WestNeighbour == neighbour) WestNeighbour = null;
+            if (EastNeighbour == neighbour) EastNeighbour = null;
             //Debug.Log(gameObject.name + " lost neighbour " + neighbour.name);
             //SetColor(Color.magenta);
         }
@@ -104,10 +95,10 @@ namespace FGJ2022.Grid
         public List<GridCell> GetAccessibleNeighbours()
         {
             List<GridCell> retList = new List<GridCell>();
-            if (northNeighbour?.Passability == CellPassability.Passable) northNeighbour = null;
-            if (southNeighbour?.Passability == CellPassability.Passable) southNeighbour = null;
-            if (westNeighbour?.Passability == CellPassability.Passable) westNeighbour = null;
-            if (eastNeighbour?.Passability == CellPassability.Passable) eastNeighbour = null;
+            if (NorthNeighbour?.Passability == CellPassability.Passable) NorthNeighbour = null;
+            if (SouthNeighbour?.Passability == CellPassability.Passable) SouthNeighbour = null;
+            if (WestNeighbour?.Passability == CellPassability.Passable) WestNeighbour = null;
+            if (EastNeighbour?.Passability == CellPassability.Passable) EastNeighbour = null;
             return retList;
         }
 
@@ -116,15 +107,19 @@ namespace FGJ2022.Grid
             get
             {
                 int count = 0;
-                if (northNeighbour != null) count++;
-                if (southNeighbour != null) count++;
-                if (westNeighbour != null) count++;
-                if (eastNeighbour != null) count++;
+                if (NorthNeighbour != null) count++;
+                if (SouthNeighbour != null) count++;
+                if (WestNeighbour != null) count++;
+                if (EastNeighbour != null) count++;
                 return count;
             }
         }
 
         public CellType Type { get => type; set => type = value; }
+        public GridCell NorthNeighbour { get => northNeighbour; set => northNeighbour = value; }
+        public GridCell SouthNeighbour { get => southNeighbour; set => southNeighbour = value; }
+        public GridCell WestNeighbour { get => westNeighbour; set => westNeighbour = value; }
+        public GridCell EastNeighbour { get => eastNeighbour; set => eastNeighbour = value; }
 
         public void SetColor(Color color)
         {
@@ -174,10 +169,10 @@ namespace FGJ2022.Grid
             // Highlighted getter resets colors automatically
 
             if (iterations <= 0) return;
-            northNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
-            westNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
-            eastNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
-            southNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
+            NorthNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
+            WestNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
+            EastNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
+            SouthNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
         }
 
         // Sets cell and neighboring cells to selected color, or if highlighted is false, to original color
@@ -190,18 +185,18 @@ namespace FGJ2022.Grid
             // Highlighted getter resets colors automatically
 
             if (iterations <= 0) return;
-            northNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
-            westNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
-            eastNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
-            southNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
+            NorthNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
+            WestNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
+            EastNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
+            SouthNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
         }
 
         private void OnDestroy()
         {
-            northNeighbour?.NeighbourLost(this);
-            southNeighbour?.NeighbourLost(this);
-            westNeighbour?.NeighbourLost(this);
-            eastNeighbour?.NeighbourLost(this);
+            NorthNeighbour?.NeighbourLost(this);
+            SouthNeighbour?.NeighbourLost(this);
+            WestNeighbour?.NeighbourLost(this);
+            EastNeighbour?.NeighbourLost(this);
         }
 
         public override string ToString()
