@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
+using System.Linq;
 
 namespace FGJ2022.Grid
 {
@@ -11,6 +12,8 @@ namespace FGJ2022.Grid
 
         [SerializeField] private Vector2Int start;
         [SerializeField] private Vector2Int end;
+
+        [SerializeField] private List<Actors.BaseActor> npcs = new List<Actors.BaseActor>();
 
         private static GridManager instance;
         public static GridManager Instance => instance;
@@ -85,9 +88,15 @@ namespace FGJ2022.Grid
 
 
         [Button]
-        public void CreateNewAreas()
+        public void CreateNewAreas(out List<Actors.BaseActor> newActors)
         {
-            currentGrid.GenerateNewCells();
+            List<GridCell> newCells = currentGrid.GenerateNewCells();
+            newActors = new List<Actors.BaseActor>();
+            foreach (var item in npcs)
+            {
+                newActors.AddRange(currentGrid.GenerateCharacters(item, 3, newCells.First().Coordinate, newCells.Last().Coordinate));
+            }
+            
         }
         
         public void GenerateGrid(int x, int y)

@@ -17,6 +17,8 @@ namespace FGJ2022
         private TurnOwner currentTurnOwner = TurnOwner.Player;
         private GameManager instance;
 
+        private Dictionary<TurnOwner, List<Actors.BaseActor>> actors = new Dictionary<TurnOwner, List<Actors.BaseActor>>();
+
         [SerializeField] private AudioClip[] songs;
         private AudioSource audioSource;
 
@@ -55,7 +57,11 @@ namespace FGJ2022
                 yield return null;
                 //yield return new WaitForSeconds(1f);
                 MoveCameraTo(playerCharacter.Position);
+                
             }
+            actors.Add(TurnOwner.Player, new List<Actors.BaseActor>());
+            actors[TurnOwner.Player].Add(playerCharacter);
+            actors.Add(TurnOwner.Sheeple, new List<Actors.BaseActor>());
             audioSource = GetComponent<AudioSource>();
             audioSource.Play();
             Input.InputManager.Instance.OnGridTargetChange += ShowPathTo;
@@ -66,7 +72,7 @@ namespace FGJ2022
         
         private void MoveCameraTo(Actors.BaseActor actor, Grid.GridCell cell)
         {
-            actor.OnMovementEnd += MoveCameraTo;
+            actor.OnMovementEnd -= MoveCameraTo;
             MoveCameraTo(cell);
         }
         private void MoveCameraTo(Grid.GridCell cell)
@@ -92,6 +98,16 @@ namespace FGJ2022
             cameraMovementRoutine = StartCoroutine(MovementRoutine());
         }
 
+        private void StartTurn(TurnOwner turnOwner)
+        {
+            currentTurnOwner = turnOwner;
+            foreach (var item in actors[currentTurnOwner])
+            {
+                item.RefreshActionPoints();
+            }
+            CheckForTurnPass(); // pass the turn immideate if no actors can move
+        }
+
         private void GridSelected(Grid.GridCell target)
         {
             if (actionInProgress)
@@ -108,6 +124,7 @@ namespace FGJ2022
                     playerCharacter.OnMovementEnd += MovementEnded;
                     playerCharacter.OnMovementEnd += CheckIfHitEdge;
                     playerCharacter.OnMovementEnd += MoveCameraTo;
+                    playerCharacter.OnMovementEnd += CheckForTurnPass;
                     actionInProgress = true;
                     Debug.Log("Moving player to " + target.Coordinate);
                 } else
@@ -122,10 +139,13 @@ namespace FGJ2022
 
         private void CheckIfHitEdge(Actors.BaseActor actor, Grid.GridCell cell)
         {
+            Debug.Log("Checking if " + actor.name + " hit edge: " + cell.Type.ToString() + " " + cell.ToString());
             actor.OnMovementEnd -= CheckIfHitEdge;
             if (cell.Type == Grid.CellType.Edge)
             {
-                Grid.GridManager.Instance.CreateNewAreas();
+                List<Actors.BaseActor> newActors = new List<Actors.BaseActor>();
+                Grid.GridManager.Instance.CreateNewAreas(out newActors);
+                actors[TurnOwner.Sheeple].AddRange(newActors);
             }
         }
 
@@ -152,16 +172,45 @@ namespace FGJ2022
             }
         }
 
+        private void CheckForTurnPass()
+        {
+            bool allMovesDone = true;
+
+            foreach (var item in actors[currentTurnOwner])
+            {
+                if (item.ActionPointsLeft > 0) allMovesDone = false;
+            }
+            if (allMovesDone)
+            {
+                Debug.Log("All moves done for, " + currentTurnOwner.ToString() + " passing turn");
+                PassTurn();
+            }
+        }
+
+        private void CheckForTurnPass(Actors.BaseActor actor, Grid.GridCell cell)
+        {
+            actor.OnMovementEnd -= CheckForTurnPass;
+            CheckForTurnPass();
+        }
+
+        private void MoveNPCs()
+        {
+
+        }
+
         [Button]
         public void PassTurn()
         {
             int currentTurnIndex = TurnOrder.IndexOf(currentTurnOwner);
             int nextTurnIndex = currentTurnIndex + 1;
-            if (currentTurnIndex == TurnOrder.Count)
+            if (currentTurnIndex == TurnOrder.Count - 1)
             {
                 nextTurnIndex = 0;
                 Debug.Log("Hit last turn");
+                
             }
+            StartTurn(TurnOrder[nextTurnIndex]);
+            Debug.Log("Passed turn to " + currentTurnOwner.ToString());
         }
 
         public void PassTurn(TurnOwner nextOwner)

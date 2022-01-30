@@ -125,15 +125,17 @@ namespace FGJ2022.Grid
         }
 
         // push new rows to the stack
-        public void GenerateNewCells()
+        public List<GridCell> GenerateNewCells()
         {
             int startingCellCount = AllCells.Count;
             int startRow = cells.First().Count;
+            List<GridCell> newCells = new List<GridCell>();
             for (int i = 0; i < Size.x; i++)
             {
                 List<GridCell> column = cells[i];
                 List<GridCell> newColumn = CreateGridColumn(Size.x, gridPrefab);
                 column.AddRange(newColumn);
+                newCells.AddRange(newColumn);
             }
 
             float seed = Random.Range(100f, 200f);
@@ -142,6 +144,26 @@ namespace FGJ2022.Grid
             SetCellTransforms();
             int endCellCount = AllCells.Count;
             Debug.Log("Generated new area with seed " + seed + " " + startingCellCount + " -> " + endCellCount);
+            return newCells;
+        }
+
+        public List<Actors.BaseActor> GenerateCharacters(Actors.BaseActor actor, int amount, Vector2Int startCorner, Vector2Int endCorner)
+        {
+            List<Actors.BaseActor> newCharacters = new List<Actors.BaseActor>();
+            while (newCharacters.Count < amount)
+            {
+                Vector2Int randomPoint = new Vector2Int(Random.Range(startCorner.x, endCorner.x), Random.Range(startCorner.y, endCorner.y));
+                GridCell cell = GetCell(randomPoint);
+                if (cell.Passability == CellPassability.Passable)
+                {
+                    Actors.BaseActor newActor = GameObject.Instantiate(actor);
+                    //newActor.transform.position = newActor.
+                    newActor.SnapToGrid(cell);
+                    newCharacters.Add(newActor);
+                }
+            }
+            Debug.Log("Created " + amount + " new characters");
+            return newCharacters;
         }
 
         private void ConnectCells()
@@ -171,8 +193,7 @@ namespace FGJ2022.Grid
 
         private void CreateBlockers(Vector2Int startPosition, Vector2Int endPosition, float threshhold = 0.5f, float seed = 1f)
         {
-            ColorCheckerBoard(Color.black, Color.black);
-
+            
             for (int x = startPosition.x; x < endPosition.x; x++)
             {
                 for (int y = startPosition.y; y < endPosition.y; y++)

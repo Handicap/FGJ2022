@@ -8,10 +8,18 @@ using System.Linq;
 
 namespace FGJ2022.Actors
 {
+    public enum ActorAffiliation
+    {
+        Player,
+        Sheeple
+    }
+
     public class BaseActor : MonoBehaviour
     {
         [SerializeField] private GridCell position;
-        [SerializeField] private GridCell targetCell;
+        [SerializeField] private int maxActionPoints = 1;
+        [SerializeField] private int actionPointsLeft = 0;
+        [SerializeField] private ActorAffiliation affiliation = ActorAffiliation.Sheeple;
 
         [SerializeField] private float movementSpeed = 6f;
 
@@ -29,6 +37,14 @@ namespace FGJ2022.Actors
         {
             get => position;
         }
+        public ActorAffiliation Affiliation { get => affiliation; set => affiliation = value; }
+        public int ActionPointsLeft { get => actionPointsLeft; }
+
+        public void RefreshActionPoints()
+        {
+            actionPointsLeft = maxActionPoints;
+        }
+
         public bool MoveTo(GridCell target)
         {
             List<GridCell> path = GridManager.Instance.FindPath(position, target, out bool pathFound);
@@ -69,6 +85,8 @@ namespace FGJ2022.Actors
                     }
                     yield return null;
                 }
+                actionPointsLeft = 0;
+                Debug.Log("Invoking movement end");
                 OnMovementEnd?.Invoke(this, position);
             }
             StartCoroutine(TraversalRoutine());
@@ -93,6 +111,18 @@ namespace FGJ2022.Actors
             position.Occupants.Add(this);
         }
 
+        public void SnapToGrid(GridCell newCell)
+        {
+            if (position != null)
+            {
+                position.Occupants.Remove(this);
+            }
+            position = newCell;
+            transform.position = newCell.transform.position;
+            Debug.Log("Moved " + this.name + " " + "to " + newCell);
+            position.Occupants.Add(this);
+        }
+
         [Button]
         public void SnapToGrid()
         {
@@ -109,27 +139,13 @@ namespace FGJ2022.Actors
                     Debug.LogError("Could not snap to grid, target did not have GridCell component");
                     return;
                 }
-                position = cell;
-                transform.position = cell.transform.position;
-                Debug.Log("snapped to " + cell);
-                position.Occupants.Add(this);
+                SnapToGrid(cell);
             } else
             {
                 Debug.LogError("Actor " + name + " was left free floating", gameObject);
             }
         }
 
-        [Button]
-        public void TestMoveTo()
-        {
-            if (!targetCell) { 
-                Debug.LogError("Moving to null cell!");
-                return; 
-            }
-            targetCell.SetColor(Color.yellow);
-            position.SetColor(Color.yellow);
-            MoveTo(targetCell);
-        }
 
         private void Start()
         {
