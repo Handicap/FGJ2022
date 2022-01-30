@@ -58,17 +58,28 @@ namespace FGJ2022
             IEnumerator DelayedStart()
             {
                 yield return null;
-                //yield return new WaitForSeconds(1f);
-                MoveCameraTo(playerCharacter.Position);
-                
+                yield return new WaitForSeconds(1f);
+                Debug.Log("asdf" + 1090);
+                if (playerCharacter != null)
+                {
+                    MoveCameraTo(playerCharacter.Position);
+                }
+                Input.InputManager.Instance.OnGridTargetChange += ShowPathTo;
+                Debug.Log("asdf" + 6);
+                Input.InputManager.Instance.OnGridSelected += GridSelected;
+                Debug.Log("asdf" + 7);
+
             }
             actors.Add(TurnOwner.Player, new List<Actors.BaseActor>());
+            Debug.Log("asdf" + 1);
             actors[TurnOwner.Player].Add(playerCharacter);
+            Debug.Log("asdf" + 2);
             actors.Add(TurnOwner.Sheeple, new List<Actors.BaseActor>());
+            Debug.Log("asdf" + 3);
             audioSource = GetComponent<AudioSource>();
+            Debug.Log("asdf" + 4);
             audioSource.Play();
-            Input.InputManager.Instance.OnGridTargetChange += ShowPathTo;
-            Input.InputManager.Instance.OnGridSelected += GridSelected;
+            Debug.Log("asdf" + 5);
             StartCoroutine(DelayedStart());
         }
 
