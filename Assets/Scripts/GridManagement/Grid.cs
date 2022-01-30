@@ -100,7 +100,7 @@ namespace FGJ2022.Grid
         public void GenerateAreas(Vector2Int startPoint, Vector2Int endPoint)
         {
             float seed = Random.Range(0f, 100f);
-            CreateBlockers(8, 8, seed: seed);
+            CreateBlockers(8, 8, seed: seed, threshhold: 0.70f);
             Debug.Log("Generated areas with seed " + seed);
         }
 
