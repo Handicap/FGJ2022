@@ -7,6 +7,7 @@ namespace FGJ2022.Actors
 {
     public class NpcActor : BaseActor
     {
+        /*
         // Start is called before the first frame update
         void Start()
         {
@@ -27,6 +28,7 @@ namespace FGJ2022.Actors
             OnActionStart -= ActionStart;
             OnActionEnd -= ActionEnd;
         }
+        */
 
         // Update is called once per frame
         void Update()

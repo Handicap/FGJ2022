@@ -13,14 +13,14 @@ namespace FGJ2022.Actors
         [SerializeField] private GridCell position;
         [SerializeField] private GridCell targetCell;
 
-        [SerializeField] private float movementSpeed = 1f;
+        [SerializeField] private float movementSpeed = 6f;
 
-        public event Action<GridCell> OnMovementStart;
-        public event Action<GridCell> OnMovementEnd;
-        public event Action<GridCell> OnArrivedToCell;
-        public event Action<GridCell> OnLeftCell;
-        public event Action OnActionStart;
-        public event Action OnActionEnd;
+        public event Action<BaseActor, GridCell> OnMovementStart;
+        public event Action<BaseActor, GridCell> OnMovementEnd;
+        public event Action<BaseActor, GridCell> OnArrivedToCell;
+        public event Action<BaseActor, GridCell> OnLeftCell;
+        public event Action<BaseActor> OnActionStart;
+        public event Action<BaseActor> OnActionEnd;
 
         private Stack<GridCell> currentPath = null;
 
@@ -57,7 +57,7 @@ namespace FGJ2022.Actors
         private void TraversePath()
         {
             Debug.Log("Starting traversal" + gameObject.name);
-            OnMovementStart?.Invoke(position);
+            OnMovementStart?.Invoke(this, position);
             Debug.Log("Path for traversal is " + string.Join(", ", currentPath));
             IEnumerator TraversalRoutine()
             {
@@ -69,14 +69,14 @@ namespace FGJ2022.Actors
                     }
                     yield return null;
                 }
+                OnMovementEnd?.Invoke(this, position);
             }
             StartCoroutine(TraversalRoutine());
-            OnMovementEnd?.Invoke(position);
         }
 
         private IEnumerator TraverseStep(GridCell from, GridCell to)
         {
-            OnLeftCell?.Invoke(from);
+            OnLeftCell?.Invoke(this, from);
             float phase = 0f;
             while ( phase < 1f)
             {
@@ -86,7 +86,7 @@ namespace FGJ2022.Actors
             }
             phase = 1f;
             gameObject.transform.position = to.transform.position;
-            OnArrivedToCell?.Invoke(to);
+            OnArrivedToCell?.Invoke(this, to);
             position = to;
             traversalStepRoutine = null;
             from.Occupants.Remove(this);

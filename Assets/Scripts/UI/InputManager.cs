@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 namespace FGJ2022.Input
 {
     public class InputManager : MonoBehaviour
     {
-        public event Action<GameObject> OnClick;
         private static InputManager instance;
-        [SerializeField] private List<GameObject> currentTargets = new List<GameObject>();
+        [SerializeField] private List<Grid.GridCell> currentTargets = new List<Grid.GridCell>();
         [SerializeField] private GameObject actorSelectorGraphic;
         [SerializeField] private GameObject actorSelectionGraphic;
         [SerializeField] private GameObject gridSelectorGraphic;
@@ -47,13 +47,13 @@ namespace FGJ2022.Input
             TestMouse();
             if (UnityEngine.Input.GetMouseButtonDown(0) && currentTargets.Count > 0)
             {
-                OnClick?.Invoke(currentTargets[0]);
+                //OnClick?.Invoke(currentTargets[0]);
                 List<string> targets = new List<string>();
                 for (int i = 0; i < currentTargets.Count; i++)
                 {
                     targets.Add(currentTargets[i].name);
                 }
-                Debug.Log("Clicked: " + string.Join(", ", targets));
+                OnGridSelected?.Invoke(currentTargets.First());
             } else if (UnityEngine.Input.GetMouseButtonUp(0))
             {
                 OnMouseRelease();
@@ -64,19 +64,18 @@ namespace FGJ2022.Input
         {
             // raycast and see if we hit something with priority
             Ray mouseRay = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
-            List<GameObject> targets = new List<GameObject>();
+            List<Grid.GridCell> targets = new List<Grid.GridCell>();
             List<string> targetStrings = new List<string>();
             for (int i = 0; i < LayerPriority.Count; i++)
             {
                 if (Physics.Raycast(mouseRay, out RaycastHit hitInfo, Mathf.Infinity, LayerPriority[i], QueryTriggerInteraction.UseGlobal))
                 {
                     GameObject hitObject = hitInfo.collider.gameObject;
-                    targets.Add(hitObject);
-                    targetStrings.Add(hitInfo.collider.gameObject.name);
-                    // this is fucking stupid
                     Grid.GridCell cell = hitObject.GetComponent<Grid.GridCell>();
-                    if (cell != null && !currentTargets.Contains(cell.gameObject))
+                    if (cell != null && !currentTargets.Contains(cell))
                     {
+                        targets.Add(cell);
+                        targetStrings.Add(hitInfo.collider.gameObject.name);
                         gridSelectorGraphic.transform.position = hitObject.transform.position;
                         OnGridTargetChange?.Invoke(cell);
                         if (cell.Occupants.Count > 0)

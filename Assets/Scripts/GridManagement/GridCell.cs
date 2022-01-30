@@ -10,11 +10,17 @@ namespace FGJ2022.Grid
     {
         Passable,
         Impassable
+    } 
+    public enum CellType
+    {
+        Default,
+        Edge
     }
     public class GridCell : MonoBehaviour
     {
         [SerializeField] private GridCell northNeighbour, southNeighbour, westNeighbour, eastNeighbour;
-        private CellPassability passability = CellPassability.Passable;
+        [SerializeField] private CellPassability passability = CellPassability.Passable;
+        [SerializeField] private CellType type = CellType.Default;
         [SerializeField] private Vector2Int coordinate;
         [SerializeField] private bool highlighted = false;
         [SerializeField] private GameObject highlightGraphic;
@@ -24,6 +30,7 @@ namespace FGJ2022.Grid
 
         private Color passableColor = new Color(0.40f, 0.75f, 0.65f);
         private Color impassableColor = new Color(0.70f, 0.20f, 0.30f);
+        private Color edgeColor = new Color(0.70f, 0.80f, 0.30f);
 
         private void Start()
         {
@@ -70,6 +77,10 @@ namespace FGJ2022.Grid
 
         public void Initialize(GridCell northNeighbour, GridCell southNeighbour, GridCell westNeighbour, GridCell eastNeighbour, Vector2Int coordinate)
         {
+            if (this.northNeighbour == this)
+            {
+                Debug.LogError("Same north as own");
+            }
             this.northNeighbour = northNeighbour;
             this.southNeighbour = southNeighbour;
             this.westNeighbour = westNeighbour;
@@ -100,6 +111,21 @@ namespace FGJ2022.Grid
             return retList;
         }
 
+        public int NeighbourCount
+        {
+            get
+            {
+                int count = 0;
+                if (northNeighbour != null) count++;
+                if (southNeighbour != null) count++;
+                if (westNeighbour != null) count++;
+                if (eastNeighbour != null) count++;
+                return count;
+            }
+        }
+
+        public CellType Type { get => type; set => type = value; }
+
         public void SetColor(Color color)
         {
             MeshRenderer[] renderers = GetComponentsInChildren<MeshRenderer>();
@@ -108,6 +134,7 @@ namespace FGJ2022.Grid
                 if(item.tag == "ColorChangingPart")
                     item.material.color = color;
             }
+            //Debug.Log("Set color to " + color, gameObject);
         }
 
         public void SetHighlightColor(Color color)
@@ -122,7 +149,9 @@ namespace FGJ2022.Grid
 
         public void ResetColor()
         {
-            SetColor(passability == CellPassability.Passable ? passableColor : impassableColor);
+            Color color = passability == CellPassability.Passable ? passableColor : impassableColor;
+            color = Type == CellType.Default ? color : edgeColor;
+            SetColor(color);
         }
 
         private void SetHighlighted(bool highlighted)

@@ -84,6 +84,14 @@ namespace FGJ2022.Grid
             return column;
         }
 
+        private void SetEdgeAreas()
+        {
+            foreach (var item in AllCells)
+            {
+                item.Type = item.NeighbourCount < 4 ? CellType.Edge : CellType.Default;
+            }
+        }
+
         // push new rows to the stack
         public void GenerateNewCells()
         {
@@ -98,6 +106,7 @@ namespace FGJ2022.Grid
             CreateBlockers(new Vector2Int(0, startRow), new Vector2Int(Size.x, cells.First().Count), threshhold: 0.7f, seed: seed);
             ConnectCells();
             SetCellTransforms();
+            
             Debug.Log("Generated new area with seed " + seed);
         }
 
@@ -132,6 +141,7 @@ namespace FGJ2022.Grid
                     GetCell(i, j).Initialize(northCell, southCell, westCell, eastCell, new Vector2Int(i, j));
                 }
             }
+            SetEdgeAreas();
         }
 
         // just some sugar to stay on track
@@ -176,7 +186,7 @@ namespace FGJ2022.Grid
             {
                 item.ResetColor();
             }
-            Debug.Log("Reset colors");
+            //Debug.Log("Reset colors");
         }
         public void ColorAll(Color color)
         {

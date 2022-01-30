@@ -898,6 +898,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1230858583}
   m_CullTransparentMesh: 1
+--- !u!114 &1372927914 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6430515392048140398, guid: 4507ff41191f58544ade18040f95993b,
+    type: 3}
+  m_PrefabInstance: {fileID: 918242517973703010}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f3f2caec4909f54d95b41d6e2a0938d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1387973937
 GameObject:
   m_ObjectHideFlags: 0
@@ -1366,6 +1378,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DevDude
       objectReference: {fileID: 0}
+    - target: {fileID: 6430515392048140398, guid: 4507ff41191f58544ade18040f95993b,
+        type: 3}
+      propertyPath: movementSpeed
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4507ff41191f58544ade18040f95993b, type: 3}
 --- !u!1001 &5919632724174359793
@@ -1435,5 +1452,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 9187696987078718640, guid: ed3966b564caf1342a6f29e6a67a1c92,
+        type: 3}
+      propertyPath: playerCharacter
+      value: 
+      objectReference: {fileID: 1372927914}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ed3966b564caf1342a6f29e6a67a1c92, type: 3}

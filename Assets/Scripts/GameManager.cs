@@ -28,6 +28,8 @@ namespace FGJ2022
             TurnOwner.Sheeple
         };
 
+        private bool actionInProgress = false;
+
         private void Awake()
         {
             if (instance == null)
@@ -46,6 +48,40 @@ namespace FGJ2022
             audioSource = GetComponent<AudioSource>();
             audioSource.Play();
             Input.InputManager.Instance.OnGridTargetChange += ShowPathTo;
+            Input.InputManager.Instance.OnGridSelected += GridSelected;
+        }
+
+        private void GridSelected(Grid.GridCell target)
+        {
+            if (actionInProgress)
+            {
+                Debug.LogWarning("Action already in progress");
+                return;
+            }
+            if (currentTurnOwner == TurnOwner.Player)
+            {
+                Grid.GridManager.Instance.FindPath(playerCharacter.Position, target, out bool pathable);
+                if (pathable)
+                {
+                    playerCharacter.MoveTo(target);
+                    playerCharacter.OnMovementEnd += MovementEnded;
+                    actionInProgress = true;
+                    Debug.Log("Moving player to " + target.Coordinate);
+                } else
+                {
+                    Debug.Log("No path to " + target.Coordinate);
+                }
+            } else
+            {
+                Debug.Log("NPC turn");
+            }
+        }
+
+        private void MovementEnded(Actors.BaseActor actor, Grid.GridCell cell)
+        {
+            actor.OnMovementEnd -= MovementEnded;
+            actionInProgress = false;
+            Debug.Log("End of movement for " + actor.name);
         }
 
         private void ShowPathTo(Grid.GridCell target)
