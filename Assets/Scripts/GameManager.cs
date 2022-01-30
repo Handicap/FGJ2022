@@ -23,6 +23,7 @@ namespace FGJ2022
         private AudioSource audioSource;
 
         [SerializeField] private Actors.BaseActor playerCharacter;
+        [SerializeField] private TMPro.TextMeshProUGUI scoreTextObject; 
 
         public static List<TurnOwner> TurnOrder = new List<TurnOwner>
         {
@@ -154,6 +155,7 @@ namespace FGJ2022
             actor.OnMovementEnd -= MovementEnded;
             actionInProgress = false;
             Debug.Log("End of movement for " + actor.name);
+            SetScoreDistance(cell.Coordinate.y.ToString());
         }
 
         private void ShowPathTo(Grid.GridCell target)
@@ -187,6 +189,17 @@ namespace FGJ2022
             }
         }
 
+        // If value is bigger than previous highscore value, update the score
+        private void SetScoreDistance(string value)
+        {
+            int oldValue = 0;
+            int newValue = 0;
+            if (int.TryParse(scoreTextObject.text, out oldValue) && int.TryParse(value, out newValue) 
+                    && oldValue < newValue )
+            {
+                scoreTextObject.text = value;
+            }
+        }
         private void CheckForTurnPass(Actors.BaseActor actor, Grid.GridCell cell)
         {
             actor.OnMovementEnd -= CheckForTurnPass;
