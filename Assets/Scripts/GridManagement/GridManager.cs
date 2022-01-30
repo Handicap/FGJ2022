@@ -96,7 +96,6 @@ namespace FGJ2022.Grid
             {
                 newActors.AddRange(currentGrid.GenerateCharacters(item, 3, newCells.First().Coordinate, newCells.Last().Coordinate));
             }
-            
         }
         
         public void GenerateGrid(int x, int y)

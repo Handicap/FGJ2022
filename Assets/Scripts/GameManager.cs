@@ -15,7 +15,7 @@ namespace FGJ2022
     public class GameManager : MonoBehaviour
     {
         [SerializeField] private TurnOwner currentTurnOwner = TurnOwner.Player;
-        private GameManager instance;
+        private static GameManager instance;
 
         private Dictionary<TurnOwner, List<Actors.BaseActor>> actors = new Dictionary<TurnOwner, List<Actors.BaseActor>>();
 
@@ -38,9 +38,11 @@ namespace FGJ2022
 
         private bool actionInProgress = false;
 
+        public static GameManager Instance { get => instance; }
+
         private void Awake()
         {
-            if (instance == null)
+            if (Instance == null)
             {
                 instance = this;
             } else
@@ -284,6 +286,11 @@ namespace FGJ2022
             // yksi funktio kahdella rivillä
             UnityEngine.SceneManagement.SceneManager.LoadScene
                 (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
+
+        public void EndGame()
+        {
+            Debug.Log("Game over");
         }
     }
 }
