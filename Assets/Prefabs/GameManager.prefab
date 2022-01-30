@@ -48,6 +48,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   songs: []
+  playerCharacter: {fileID: 0}
+  CameraTransform: {fileID: 0}
+  cameraMovementSpeed: 2
+  cameraMovementCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!82 &2673964922427136224
 AudioSource:
   m_ObjectHideFlags: 0
@@ -58,7 +67,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 3690f4549098e774a97628650703c16a, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 4c831858310759f45b1d9ff16814a247, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
