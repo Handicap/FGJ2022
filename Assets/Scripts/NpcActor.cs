@@ -44,6 +44,7 @@ namespace FGJ2022.Actors
                     return true;
                 }
             }
+            if (Position.Occupants.Any(x => x.Affiliation == ActorAffiliation.Player)) return true;
             return false;
         }
 

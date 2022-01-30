@@ -106,12 +106,14 @@ namespace FGJ2022.Grid
 
         public List<GridCell> GetAllNeighbours()
         {
-            return new List<GridCell> { 
+            List<GridCell> activeNeighbours = new List<GridCell> {
                 neighbours[Direction.North],
                 neighbours[Direction.South],
                 neighbours[Direction.West],
                 neighbours[Direction.East]
             };
+            activeNeighbours.RemoveAll(x => x == null);
+            return activeNeighbours;
         }
 
         public GridCell GetRandomNeighbour(GridCell exclude = null)
