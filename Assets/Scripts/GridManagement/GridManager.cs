@@ -84,6 +84,11 @@ namespace FGJ2022.Grid
             currentGrid.GenerateAreas(new Vector2Int(0, 0), new Vector2Int(10, 10));
         }
 
+        [Button]
+        public void CreateNewAreas()
+        {
+            currentGrid.GenerateNewCells();
+        }
         
         public void GenerateGrid(int x, int y)
         {

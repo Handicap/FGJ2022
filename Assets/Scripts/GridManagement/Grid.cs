@@ -8,6 +8,14 @@ namespace FGJ2022.Grid
     public class Grid
     {
         private List<List<GridCell>> cells = new List<List<GridCell>>();
+        private GameObject baseObject;
+        private GridCell gridPrefab;
+
+        public Vector2 CellSize { get
+            {
+                return gridPrefab.Dimensions;
+            }
+        }
 
         public List<GridCell> AllCells { get
             {
@@ -27,29 +35,65 @@ namespace FGJ2022.Grid
 
         public Grid(GridCell gridPrefab, int xDimension, int yDimension, Transform parent = null)
         {
-            GameObject baseObject = new GameObject();
+            baseObject = new GameObject();
             baseObject.name = "Grid-" + xDimension + "-" + yDimension;
             if (parent != null)
             {
                 baseObject.transform.SetParent(parent);
             }
-            Vector2 cellSize = gridPrefab.Dimensions;
             for (int x = 0; x < xDimension; x++)
             {
-                cells.Add(new List<GridCell>());
-                for (int y = 0; y < yDimension; y++)
+                List<GridCell> column = CreateGridColumn(yDimension, gridPrefab);
+                cells.Add(column);                
+            }
+            //Color mainColor = Color.red;
+            //Color secondaryColor = Color.black;
+            //ColorCheckerBoard(mainColor, secondaryColor);
+            SetCellTransforms();
+            ConnectCells();
+        }
+
+        private void SetCellTransforms()
+        {
+            for (int i = 0; i < cells.Count; i++)
+            {
+                for (int j = 0; j < cells[i].Count; j++)
                 {
-                    GridCell newCell = GameObject.Instantiate(gridPrefab);
-                    newCell.transform.position = new Vector3(cellSize.x * x, 0, y);
-                    newCell.name = "Cell-" + x + "-" + y;
-                    cells[x].Add(newCell);
-                    newCell.transform.SetParent(baseObject.transform);
+                    GridCell cell = cells[i][j];
+                    cell.transform.position = new Vector3(CellSize.x * i, 0, j);
+                    cell.transform.SetParent(baseObject.transform);
                 }
             }
-            Color mainColor = Color.red;
-            Color secondaryColor = Color.black;
-            ColorCheckerBoard(mainColor, secondaryColor);
+        }
+
+        private List<GridCell> CreateGridColumn(int length, GridCell gridPrefab)
+        {
+            this.gridPrefab = gridPrefab;
+            List<GridCell> column = new List<GridCell>();
+            for (int y = 0; y < length; y++)
+            {
+                GridCell newCell = GameObject.Instantiate(gridPrefab);
+                //newCell.transform.position = new Vector3(cellSize.x * x, 0, y);
+                newCell.name = "Cell-" + y;
+                //cells[x].Add(newCell);
+                column.Add(newCell);
+                //newCell.transform.SetParent(baseObject.transform);
+            }
+            return column;
+        }
+
+        // push new rows to the stack
+        public void GenerateNewCells()
+        {
+            int startRow = cells.First().Count;
+            for (int i = 0; i < Size.x; i++)
+            {
+                List<GridCell> column = cells[i];
+                column.AddRange(CreateGridColumn(Size.x, gridPrefab));
+            }
+            CreateBlockers(new Vector2Int(0, startRow), new Vector2Int(Size.x, cells.First().Count));
             ConnectCells();
+            SetCellTransforms();
         }
 
         private void ConnectCells()
@@ -99,34 +143,33 @@ namespace FGJ2022.Grid
 
         public void GenerateAreas(Vector2Int startPoint, Vector2Int endPoint)
         {
-            float seed = Random.Range(0f, 100f);
-            CreateBlockers(8, 8, seed: seed, threshhold: 0.70f);
+            float seed = Random.Range(100f, 200f);
+            CreateBlockers(startPoint, endPoint, seed: seed, threshhold: 0.70f);
             Debug.Log("Generated areas with seed " + seed);
         }
 
-        private void CreateBlockers(float perlinX, float perlinY, float threshhold = 0.5f, float seed = 1f)
+        private void CreateBlockers(Vector2Int startPosition, Vector2Int endPosition, float threshhold = 0.5f, float seed = 1f)
         {
             ColorCheckerBoard(Color.black, Color.black);
-            for (int i = 0; i < cells.Count; i++)
+
+            for (int x = startPosition.x; x < endPosition.x; x++)
             {
-                float iFactor = (float) i / (float)cells.Count;
-                for (int j = 0; j < cells[i].Count; j++)
+                for (int y = startPosition.y; y < endPosition.y; y++)
                 {
-                    float jFactor = (float)j / (float)cells.Count;
-                    float perlinSample = Mathf.PerlinNoise(iFactor * seed, jFactor * seed);
+                    float xFactor = (float)x / (float)cells.Count;
+                    float yFactor = (float)y / (float)cells.Count;
+                    float perlinSample = Mathf.PerlinNoise(xFactor * seed, yFactor * seed);
+
                     if (perlinSample > threshhold)
                     {
-                        //Debug.Log("Perlin hit " + perlinSample, cells[i][j]);
-                        //cells[i][j].SetColor(Color.blue);
-                        GetCell(i, j).Passability = CellPassability.Impassable;
-                    } else
+                        GetCell(x, y).Passability = CellPassability.Impassable;
+                    }
+                    else
                     {
-                        //Debug.Log("Perlin miss " + perlinSample, cells[i][j]);
-                        GetCell(i, j).Passability = CellPassability.Passable;
+                        GetCell(x, y).Passability = CellPassability.Passable;
                     }
                 }
             }
-            
         }
 
         public void ColorAll(Color color)
