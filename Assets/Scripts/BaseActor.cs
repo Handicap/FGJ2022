@@ -16,6 +16,7 @@ namespace FGJ2022.Actors
 
     public class BaseActor : MonoBehaviour
     {
+        [SerializeField] private int movementRange = 5;
         [SerializeField] private GridCell position;
         [SerializeField] private int maxActionPoints = 1;
         [SerializeField] private int actionPointsLeft = 0;
@@ -39,10 +40,32 @@ namespace FGJ2022.Actors
         }
         public ActorAffiliation Affiliation { get => affiliation; set => affiliation = value; }
         public int ActionPointsLeft { get => actionPointsLeft; }
+        public int MovementRange { get => movementRange; set => movementRange = value; }
 
         public void RefreshActionPoints()
         {
             actionPointsLeft = maxActionPoints;
+        }
+
+        // this will take into account if the character has enough movement range
+        public bool MoveTowards(GridCell target)
+        {
+            List<GridCell> path = GridManager.Instance.FindPath(position, target, out bool pathFound);
+            if (!pathFound)
+            {
+                Debug.LogWarning("No path from " + position + " to " + target);
+                return false;
+            }
+            path.Reverse();
+            currentPath = new Stack<GridCell>();
+            int stepsLeft = path.Count > MovementRange ? MovementRange : path.Count;
+            for (int i = 0; i < stepsLeft; i++)
+            {
+                currentPath.Push(path[i]);
+            }
+            currentPath.Push(position);
+            TraversePath();
+            return pathFound;
         }
 
         public bool MoveTo(GridCell target)
@@ -68,6 +91,19 @@ namespace FGJ2022.Actors
             currentPath.Push(position);
             TraversePath();
             return pathFound;
+        }
+
+        public GridCell GetRandomDestination()
+        {
+            GridCell nextStep = Position.GetRandomNeighbour(exclude: position);
+            for (int i = 0; i < MovementRange; i++)
+            {
+                if (nextStep != null)
+                {
+                    nextStep = position.GetRandomNeighbour(exclude: nextStep);
+                }
+            }
+            return nextStep;
         }
 
         private void TraversePath()
@@ -119,7 +155,7 @@ namespace FGJ2022.Actors
             }
             position = newCell;
             transform.position = newCell.transform.position;
-            Debug.Log("Moved " + this.name + " " + "to " + newCell);
+            Debug.Log("Snapped " + this.name + " " + "to " + newCell);
             position.Occupants.Add(this);
         }
 

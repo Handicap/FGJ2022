@@ -105,6 +105,10 @@ namespace FGJ2022
             {
                 item.RefreshActionPoints();
             }
+            if (turnOwner != TurnOwner.Player)
+            {
+                MoveNPCs();
+            }
             CheckForTurnPass(); // pass the turn immideate if no actors can move
         }
 
@@ -120,7 +124,8 @@ namespace FGJ2022
                 Grid.GridManager.Instance.FindPath(playerCharacter.Position, target, out bool pathable);
                 if (pathable)
                 {
-                    playerCharacter.MoveTo(target);
+                    //playerCharacter.MoveTo(target);
+                    playerCharacter.MoveTowards(target);
                     playerCharacter.OnMovementEnd += MovementEnded;
                     playerCharacter.OnMovementEnd += CheckIfHitEdge;
                     playerCharacter.OnMovementEnd += MoveCameraTo;
@@ -165,9 +170,10 @@ namespace FGJ2022
             List<Grid.GridCell> path = Grid.GridManager.Instance.FindPath(playerCharacter.Position, target, out bool success);
             if (success)
             {
-                foreach (var item in path)
+                int stepsLeft = playerCharacter.MovementRange < path.Count ? playerCharacter.MovementRange : path.Count;
+                for (int i = 0; i < stepsLeft; i++)
                 {
-                    item.SetColor(Color.cyan);
+                    path[i].SetColor(Color.cyan);
                 }
             }
         }
@@ -195,7 +201,30 @@ namespace FGJ2022
 
         private void MoveNPCs()
         {
-
+            IEnumerator MovementCoroutine()
+            {
+                List<Actors.BaseActor> actorsLeft = new List<Actors.BaseActor>(actors[TurnOwner.Sheeple]);
+                foreach (var item in actors[TurnOwner.Sheeple])
+                {
+                    item.OnMovementEnd += MovementEnded;
+                    //item.OnMovementEnd += CheckIfHitEdge;
+                    item.OnMovementEnd += MoveCameraTo;
+                    item.OnMovementEnd += CheckForTurnPass;
+                }
+                while(actorsLeft.Count > 0)
+                {
+                    if (!actionInProgress)
+                    {
+                        Actors.BaseActor nextActor = actorsLeft.First();
+                        Grid.GridCell cell = nextActor.GetRandomDestination();
+                        nextActor.MoveTowards(cell);
+                        actorsLeft.Remove(nextActor);
+                        Debug.Log("Moving " + nextActor, nextActor);
+                    }
+                    yield return null;
+                }
+            }
+            StartCoroutine(MovementCoroutine());
         }
 
         [Button]

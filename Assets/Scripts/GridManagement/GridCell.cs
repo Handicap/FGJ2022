@@ -16,9 +16,25 @@ namespace FGJ2022.Grid
         Default,
         Edge
     }
+
+    public enum Direction
+    {
+        North,
+        South,
+        East,
+        West
+    }
+
     public class GridCell : MonoBehaviour
     {
-        [SerializeField] private GridCell northNeighbour, southNeighbour, westNeighbour, eastNeighbour;
+        private Dictionary<Direction, GridCell> neighbours = new Dictionary<Direction, GridCell>
+        {
+            { Direction.North, null },
+            { Direction.South, null },
+            { Direction.East, null },
+            { Direction.West, null }
+        };
+        //[SerializeField] private GridCell northNeighbour, southNeighbour, westNeighbour, eastNeighbour;
         [SerializeField] private CellPassability passability = CellPassability.Passable;
         [SerializeField] private CellType type = CellType.Default;
         [SerializeField] private Vector2Int coordinate;
@@ -82,24 +98,42 @@ namespace FGJ2022.Grid
                 Debug.LogError("Cell can't find highlight graphic");
         }
 
+        public GridCell GetNeighbour(Direction dir)
+        {
+            neighbours.TryGetValue(dir, out GridCell value);
+            return value;
+        }
+
+        public GridCell GetRandomNeighbour(GridCell exclude = null)
+        {
+            List<GridCell> validCells = new List<GridCell>(neighbours.Values);
+            foreach (var item in neighbours.Values)
+            {
+                if (item == null) validCells.Remove(item);
+            }
+            if (exclude != null)
+            {
+                validCells.Remove(exclude);
+            }
+            if (validCells.Count == 0) return null;
+            return validCells[UnityEngine.Random.Range(0, validCells.Count - 1)];
+        }
+
         private void NeighbourLost(GridCell neighbour)
         {
+            /*
             if (NorthNeighbour == neighbour) NorthNeighbour = null;
             if (SouthNeighbour == neighbour) SouthNeighbour = null;
             if (WestNeighbour == neighbour) WestNeighbour = null;
             if (EastNeighbour == neighbour) EastNeighbour = null;
             //Debug.Log(gameObject.name + " lost neighbour " + neighbour.name);
             //SetColor(Color.magenta);
+            */
         }
 
-        public List<GridCell> GetAccessibleNeighbours()
+        public void SetNeighbour(Direction dir, GridCell cell)
         {
-            List<GridCell> retList = new List<GridCell>();
-            if (NorthNeighbour?.Passability == CellPassability.Passable) NorthNeighbour = null;
-            if (SouthNeighbour?.Passability == CellPassability.Passable) SouthNeighbour = null;
-            if (WestNeighbour?.Passability == CellPassability.Passable) WestNeighbour = null;
-            if (EastNeighbour?.Passability == CellPassability.Passable) EastNeighbour = null;
-            return retList;
+            neighbours[dir] = cell;
         }
 
         public int NeighbourCount
@@ -107,19 +141,15 @@ namespace FGJ2022.Grid
             get
             {
                 int count = 0;
-                if (NorthNeighbour != null) count++;
-                if (SouthNeighbour != null) count++;
-                if (WestNeighbour != null) count++;
-                if (EastNeighbour != null) count++;
+                foreach (var item in neighbours)
+                {
+                    if (item.Value != null) count++;
+                }
                 return count;
             }
         }
 
         public CellType Type { get => type; set => type = value; }
-        public GridCell NorthNeighbour { get => northNeighbour; set => northNeighbour = value; }
-        public GridCell SouthNeighbour { get => southNeighbour; set => southNeighbour = value; }
-        public GridCell WestNeighbour { get => westNeighbour; set => westNeighbour = value; }
-        public GridCell EastNeighbour { get => eastNeighbour; set => eastNeighbour = value; }
 
         public void SetColor(Color color)
         {
@@ -169,10 +199,10 @@ namespace FGJ2022.Grid
             // Highlighted getter resets colors automatically
 
             if (iterations <= 0) return;
-            NorthNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
-            WestNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
-            EastNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
-            SouthNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
+            //NorthNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
+            //WestNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
+            //EastNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
+            //SouthNeighbour?.SetNeighborsHighlightedRecursively(highlighted, iterations - 1);
         }
 
         // Sets cell and neighboring cells to selected color, or if highlighted is false, to original color
@@ -185,18 +215,20 @@ namespace FGJ2022.Grid
             // Highlighted getter resets colors automatically
 
             if (iterations <= 0) return;
+            /*
             NorthNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
             WestNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
             EastNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
             SouthNeighbour?.SetNeighborsHighlightedRecursively(highlighted, color, iterations - 1);
+            */
         }
 
         private void OnDestroy()
         {
-            NorthNeighbour?.NeighbourLost(this);
-            SouthNeighbour?.NeighbourLost(this);
-            WestNeighbour?.NeighbourLost(this);
-            EastNeighbour?.NeighbourLost(this);
+            foreach (var item in neighbours)
+            {
+                if (item.Value != null) item.Value.NeighbourLost(this);
+            }
         }
 
         public override string ToString()

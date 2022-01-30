@@ -92,19 +92,19 @@ namespace FGJ2022.Grid
                     GridCell cell = cells[i][j];
                     if (i != 0)
                     {
-                        cell.WestNeighbour = cells[i - 1][j];
+                        cell.SetNeighbour(Direction.West, cells[i - 1][j]);
                     }
                     if (i != cells.Count - 1)
                     {
-                        cell.EastNeighbour = cells[i + 1][j];
+                        cell.SetNeighbour(Direction.East, cells[i + 1][j]);
                     }
                     if (j != 0)
                     {
-                        cell.SouthNeighbour = cells[i][j - 1];
+                        cell.SetNeighbour(Direction.South, cells[i][j - 1]);
                     }
                     if (j != cells[0].Count - 1)
                     {
-                        cell.NorthNeighbour = cells[i][j + 1];
+                        cell.SetNeighbour(Direction.North, cells[i][j + 1]);
                     }
                 }
             }
@@ -113,7 +113,7 @@ namespace FGJ2022.Grid
         {
             foreach (var item in AllCells)
             {
-                if (item.NorthNeighbour == null)
+                if (item.GetNeighbour(Direction.North) == null)
                 {
                     item.Type = CellType.Edge;
                 } else

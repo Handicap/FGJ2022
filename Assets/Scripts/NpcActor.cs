@@ -49,11 +49,6 @@ namespace FGJ2022.Actors
 
         }
 
-        public Grid.GridCell GetRandomDestination()
-        {
-            return new GridCell();
-        }
-
         void ActionEnd() { }
     }
 }
