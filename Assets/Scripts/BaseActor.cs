@@ -91,6 +91,8 @@ namespace FGJ2022.Actors
         [Button]
         public void SnapToGrid()
         {
+            // DEBUG RAY
+            Debug.DrawRay(transform.position, Vector3.down, Color.magenta);
             Ray downwardsRay = new Ray(transform.position, Vector3.down);
             if (Physics.Raycast(downwardsRay, out RaycastHit hitInfo))
             {

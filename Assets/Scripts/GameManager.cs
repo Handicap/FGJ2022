@@ -63,5 +63,11 @@ namespace FGJ2022
             Debug.Log("Passed turn to " + nextOwner.ToString());
         }
 
+        public void Restart()
+        {
+            // yksi funktio kahdella rivillä
+            UnityEngine.SceneManagement.SceneManager.LoadScene
+                (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
     }
 }

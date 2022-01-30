@@ -685,7 +685,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Pass turn
+  m_text: 'New
+
+    Level'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -848,7 +850,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1492380143}
         m_TargetAssemblyTypeName: FGJ2022.GameManager, Assembly-CSharp
-        m_MethodName: PassTurn
+        m_MethodName: Restart
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
